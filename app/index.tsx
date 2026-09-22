@@ -1,0 +1,171 @@
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useCallback } from 'react';
+import { ImageBackground, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { PrimaryButton } from '../src/components/PrimaryButton';
+import { useBooking } from '../src/context/BookingContext';
+import { colors, radius, spacing, typography } from '../src/theme/tokens';
+
+const HERO_IMAGE =
+  'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1080&q=80';
+
+// TODO: reemplazar por el número real de la barbería cuando exista el backend.
+const WHATSAPP_URL = 'https://wa.me/573001112233';
+
+export default function HomeScreen() {
+  const router = useRouter();
+  const { reset } = useBooking();
+
+  /** Cada flujo arranca limpio: es el único punto donde se resetea el estado. */
+  const startBooking = useCallback(() => {
+    reset();
+    router.push('/reserva/barbero');
+  }, [reset, router]);
+
+  const openWhatsApp = useCallback(() => {
+    void Linking.openURL(WHATSAPP_URL);
+  }, []);
+
+  return (
+    <ImageBackground source={{ uri: HERO_IMAGE }} style={styles.hero}>
+      <View style={styles.overlay}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.content}>
+            <Text style={styles.eyebrow}>— Estilo & Precisión —</Text>
+            <Text style={styles.title}>
+              Tu mejor versión,{'\n'}
+              <Text style={styles.titleAccent}>cada visita.</Text>
+            </Text>
+            <Text style={styles.description}>
+              Reserva con el barbero que ya conoce tu corte. Elige el día, la hora y listo: sin
+              llamadas y sin filas.
+            </Text>
+
+            <View style={styles.actions}>
+              <View style={styles.actionSlot}>
+                <PrimaryButton label="Agendar Cita" onPress={startBooking} />
+              </View>
+              <View style={styles.actionSlot}>
+                {/* TODO: catálogo de servicios pendiente de diseño. */}
+                <Pressable
+                  onPress={() => undefined}
+                  accessibilityRole="button"
+                  style={({ pressed }) => [styles.secondary, pressed && styles.pressed]}
+                >
+                  <Text style={styles.secondaryLabel}>Ver Servicios</Text>
+                </Pressable>
+              </View>
+            </View>
+
+            {/* TODO: sección de contacto pendiente de diseño. */}
+            <Pressable
+              onPress={() => undefined}
+              accessibilityRole="button"
+              style={({ pressed }) => [styles.contact, pressed && styles.pressed]}
+            >
+              <Text style={styles.contactLabel}>Contáctanos</Text>
+              <Ionicons name="chevron-down" size={14} color={colors.textSecondary} />
+            </Pressable>
+          </View>
+
+          <Pressable
+            onPress={openWhatsApp}
+            accessibilityRole="button"
+            accessibilityLabel="Escribir por WhatsApp"
+            style={({ pressed }) => [styles.fab, pressed && styles.pressed]}
+          >
+            <Ionicons name="logo-whatsapp" size={28} color={colors.textPrimary} />
+          </Pressable>
+        </SafeAreaView>
+      </View>
+    </ImageBackground>
+  );
+}
+
+const styles = StyleSheet.create({
+  hero: {
+    flex: 1,
+    backgroundColor: colors.bg,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: colors.heroOverlay,
+  },
+  safeArea: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    gap: spacing.md,
+  },
+  eyebrow: {
+    ...typography.overline,
+    letterSpacing: 2,
+    color: colors.primary,
+  },
+  title: {
+    ...typography.heroTitle,
+    color: colors.textPrimary,
+    textAlign: 'center',
+  },
+  titleAccent: {
+    color: colors.primary,
+  },
+  description: {
+    ...typography.body,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 21,
+  },
+  actions: {
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    gap: spacing.sm,
+    paddingTop: spacing.sm,
+  },
+  actionSlot: {
+    flex: 1,
+  },
+  secondary: {
+    height: 52,
+    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  secondaryLabel: {
+    ...typography.button,
+    color: colors.textPrimary,
+  },
+  contact: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    paddingTop: spacing.sm,
+  },
+  contactLabel: {
+    ...typography.caption,
+    color: colors.textSecondary,
+  },
+  pressed: {
+    opacity: 0.7,
+  },
+  fab: {
+    position: 'absolute',
+    right: spacing.lg,
+    bottom: spacing.lg,
+    width: 56,
+    height: 56,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.whatsapp,
+  },
+});

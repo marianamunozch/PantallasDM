@@ -1,0 +1,26 @@
+/**
+ * Catálogo de códigos de error de la API.
+ *
+ * Son estables y legibles por máquina: el cliente hace switch sobre `code`,
+ * nunca sobre `message` (que puede cambiar de redacción o de idioma).
+ * Tenerlos en un solo sitio evita erratas y sirve de documentación.
+ */
+export const ERROR_CODES = {
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  ROUTE_NOT_FOUND: 'ROUTE_NOT_FOUND',
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+  TOO_MANY_REQUESTS: 'TOO_MANY_REQUESTS',
+
+  BARBER_NOT_FOUND: 'BARBER_NOT_FOUND',
+  BARBER_CLOSED_THAT_DAY: 'BARBER_CLOSED_THAT_DAY',
+
+  BOOKING_NOT_FOUND: 'BOOKING_NOT_FOUND',
+  BOOKING_SLOT_TAKEN: 'BOOKING_SLOT_TAKEN',
+  BOOKING_ALREADY_CANCELLED: 'BOOKING_ALREADY_CANCELLED',
+
+  DATE_IN_PAST: 'DATE_IN_PAST',
+  TIME_IN_PAST: 'TIME_IN_PAST',
+  TIME_NOT_IN_SCHEDULE: 'TIME_NOT_IN_SCHEDULE',
+} as const;
+
+export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
